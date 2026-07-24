@@ -1,0 +1,4 @@
+books/
+*.pdf
+.DS_Store
+*.bak

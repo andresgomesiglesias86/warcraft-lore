@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warcraft — Arbre des personnages & Ordre de lecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arbre-cytoscape.css">
+</head>
+<body>
+<div id="app">
+  <header id="masthead">
+    <h1>Warcraft</h1>
+    <p>La Saga complète</p>
+    <button class="nospoil-toggle" id="nospoil-btn">🙈 Anti-spoilers</button>
+    <div class="tabs">
+      <button class="tab active" data-view="tree">Personnages</button>
+      <button class="tab" data-view="books">Ordre de lecture</button>
+      <button class="tab" data-view="lib">Bibliothèque</button>
+      <button class="tab" data-view="game">En jeu</button>
+      <button class="tab" data-view="videos">Cinématiques</button>
+    </div>
+  </header>
+
+  <div class="view active" id="view-tree">
+    <h2 class="view-title">Personnages</h2>
+    <div class="search-wrap">
+      <input type="search" id="char-search" placeholder="Rechercher un héros, un traître, un dieu déchu…" autocomplete="off">
+      <div class="search-results" id="search-results"></div>
+    </div>
+    <div id="chars-groups"></div>
+  </div>
+
+  <div class="view" id="view-books">
+    <h2 class="view-title">Ordre de lecture</h2>
+    <div class="hint">25 livres dans l'ordre conseillé</div>
+    <div class="books" id="books"></div>
+  </div>
+
+  <div class="view" id="view-lib">
+    <h2 class="view-title">Bibliothèque</h2>
+    <div class="hint">Toutes les publications Warcraft</div>
+    <div class="lib" id="lib"></div>
+  </div>
+
+  <div class="view" id="view-game">
+    <h2 class="view-title">En jeu</h2>
+    <div class="hint">Vivre l'histoire manette en main — ordre chronologique des jeux</div>
+    <div class="books" id="game"></div>
+  </div>
+
+  <div class="view" id="view-videos">
+    <h2 class="view-title">Cinématiques</h2>
+    <div class="hint">47 vidéos officielles Blizzard — cinématiques, courts métrages animés, documentaires</div>
+    <div class="vid-filters" id="vid-filters"></div>
+    <div class="vid-grid" id="vid-grid"></div>
+  </div>
+</div>
+<div class="vid-modal-overlay" id="vid-modal-overlay">
+  <div class="vid-modal" id="vid-modal">
+    <button class="modal-close" id="vid-modal-close">✕</button>
+    <div class="vid-modal-player">
+      <iframe id="vid-modal-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div class="vid-modal-info">
+      <h3 id="vid-modal-title"></h3>
+      <div class="vid-modal-era" id="vid-modal-era"></div>
+      <p id="vid-modal-desc"></p>
+      <div class="vid-modal-chars" id="vid-modal-chars"></div>
+    </div>
+  </div>
+</div>
+<div class="sheet" id="sheet">
+  <button class="close" id="close">✕</button>
+  <div class="sheet-top" id="sheet-top">
+    <div id="s-art"></div>
+    <div class="sheet-header">
+      <h2 id="s-name"></h2>
+      <div class="role" id="s-role"></div>
+      <div id="s-info"></div>
+    </div>
+  </div>
+  <p id="s-desc"></p>
+  <ul id="s-rels"></ul><div class="persos" id="s-persos"></div><div id="s-wiki"></div><div id="s-bib"></div><div id="s-quests"></div><div id="s-videos"></div>
+</div>
+<div class="char-full" id="char-full">
+  <button class="char-full-close" id="char-full-close">✕</button>
+  <div class="char-hero">
+    <div class="char-hero-text">
+      <h1 id="cf-name"></h1>
+      <div class="char-hero-role" id="cf-role"></div>
+      <div class="char-hero-divider"><span></span><i></i><span></span></div>
+      <p class="char-hero-desc" id="cf-desc"></p>
+      <div id="cf-info"></div>
+      <div id="cf-wiki"></div>
+    </div>
+    <div class="char-hero-img" id="cf-art"></div>
+  </div>
+  <div class="char-rels-section" id="cf-rels-section">
+    <div class="char-rels-title">Relations</div>
+    <div class="char-rels-grid" id="cf-rels"></div>
+  </div>
+  <div class="char-full-body">
+    <div id="cf-bib"></div>
+    <div id="cf-quests"></div>
+    <div id="cf-videos"></div>
+  </div>
+</div>
+<div class="lore-modal-overlay" id="lore-modal-overlay">
+  <div class="lore-modal" id="lore-modal">
+    <button class="modal-close" id="lore-modal-close">✕</button>
+    <h3 id="lore-modal-name"></h3>
+    <div class="lore-role" id="lore-modal-role"></div>
+    <p id="lore-modal-text"></p>
+  </div>
+</div>
+<div class="full-lore-overlay" id="full-lore-overlay">
+  <button class="modal-close" id="full-lore-close">✕</button>
+  <div class="full-lore-modal" id="full-lore-modal">
+    <div class="full-lore-header" id="full-lore-header"></div>
+    <div class="full-lore-body" id="full-lore-body"></div>
+  </div>
+</div>
+<script src="warcraft-data.js"></script>
+<script src="arbre-cytoscape.js"></script>
+
+</body>
+</html>

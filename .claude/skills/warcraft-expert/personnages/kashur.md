@@ -1,0 +1,33 @@
+# Kashur
+
+**Total des mentions:** 64
+
+**Fichiers sources:** 1
+
+---
+
+## World of Warcraft - (2006) Rise of the Horde - Christie Golden.txt
+**Mentions:** 64
+
+- ...v es, an ancien t orc female they called "Mother" Kashur. "You are not 
+too old to be beaten as a disobedi...
+- ...worried 
+about such sensitivity, and from Mother Kashur. who scoffed at them and told them to worry about...
+- ..., the sadder he seemed to become.  
+/ wish Mother Kashur could be here instead of me, Durotan thought sudd...
+- ...in a single evening, 
+though he suspected Mother Kashur would have an intrinsic comprehension, and he aga...
+- ...meant.  
+"Bring him," the old  orc said to Mother Kashur.  
+Mother Kashur, the eldest shaman of the Frostw...
+- ...im," the old  orc said to Mother Kashur.  
+Mother Kashur, the eldest shaman of the Frostwolf clan, slept d...
+- ...ked on cold days for the clan's 
+"mother." Mother Kashur's duty was to listen to the wind and water and fi...
+- ...age," Grandfa ther told the young, vibrant dre am-Kashur. She nodded, her dark hair flowing with the 
+move...
+- ...."  
+It was the second time he had said this, and Kashur was not certain as to what he meant.  
+"He will c...
+- ...fie rcely, his brown eyes nar rowed in annoyance, Kashur smothered a smile; of all the spirits that honore...
+

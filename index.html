@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warcraft — La Saga complète</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0908;
+  --panel:#151210;
+  --ink:#e8e2d4;--ink-bright:#f2ead0;
+  --muted:#8a7f68;--faint:#6b6252;
+  --gold:#cba135;--gold-dark:#9c7a25;
+  --gold-15:rgba(203,161,53,.15);--gold-25:rgba(203,161,53,.25);--gold-35:rgba(203,161,53,.35);
+  --blood:#b0402f;--fel:#82c437;--draenei:#6db3d8;
+  --body-text:#ddd5bc;--body-dim:#c9bfa8;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'EB Garamond',serif;overflow-x:hidden}
+
+/* ═══ HERO ═══ */
+.hero{
+  position:relative;min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 24px 90px;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%,rgba(28,58,48,.55) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 45% at 50% 108%,rgba(203,161,53,.10) 0%,transparent 55%),
+    var(--bg);
+}
+.hero::before{ /* vignette */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%);
+}
+.hero::after{ /* lueur horizon */
+  content:"";position:absolute;left:10%;right:10%;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-35),transparent);
+}
+.hero-kicker{position:relative;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.5em;text-transform:uppercase;color:var(--faint);margin-bottom:26px}
+.hero h1{
+  position:relative;font-family:'Cinzel',serif;font-weight:900;
+  font-size:clamp(2.6rem,11vw,6.5rem);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);line-height:1;margin-right:-.18em;
+  text-shadow:0 0 60px rgba(203,161,53,.25),0 2px 0 rgba(0,0,0,.6);
+}
+.hero-sub{position:relative;font-family:'Cinzel',serif;font-weight:500;font-size:clamp(.7rem,2.4vw,1rem);letter-spacing:.55em;text-transform:uppercase;color:var(--ink-bright);margin:18px 0 0;margin-right:-.55em}
+.hero-divider{position:relative;display:flex;align-items:center;gap:12px;margin:34px 0}
+.hero-divider span{width:min(120px,22vw);height:1px;background:linear-gradient(90deg,transparent,var(--gold-35))}
+.hero-divider span:last-child{background:linear-gradient(90deg,var(--gold-35),transparent)}
+.hero-divider i{width:7px;height:7px;border:1px solid var(--gold);transform:rotate(45deg)}
+.hero-tag{position:relative;font-style:italic;font-size:clamp(1.05rem,3vw,1.4rem);color:var(--body-dim);max-width:640px;line-height:1.7}
+.hero-tag b{color:var(--ink-bright);font-weight:500}
+.hero-cta{margin-top:44px;position:relative}
+.btn{
+  display:inline-block;font-family:'Cinzel',serif;font-weight:700;font-size:.78rem;
+  letter-spacing:.22em;text-transform:uppercase;text-decoration:none;
+  color:#1a1210;background:linear-gradient(160deg,var(--gold),var(--gold-dark));
+  padding:16px 42px;border:1px solid var(--gold-dark);
+  box-shadow:0 0 0 1px rgba(10,9,8,.9) inset,0 0 30px rgba(203,161,53,.25),0 6px 20px rgba(0,0,0,.5);
+  transition:transform .2s,box-shadow .2s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(10,9,8,.9) inset,0 0 45px rgba(203,161,53,.4),0 10px 26px rgba(0,0,0,.55)}
+.btn.ghost{
+  color:var(--gold);background:none;border:1px solid var(--gold-35);box-shadow:none;
+}
+.btn.ghost:hover{border-color:var(--gold);background:var(--gold-15);box-shadow:none}
+.scroll-cue{
+  position:absolute;bottom:26px;left:50%;transform:translateX(-50%);
+  color:var(--faint);text-decoration:none;font-family:'Cinzel',serif;
+  font-size:.56rem;letter-spacing:.35em;text-transform:uppercase;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.scroll-cue::after{content:"";width:1px;height:34px;background:linear-gradient(180deg,var(--gold-35),transparent);animation:cue 2.2s ease infinite}
+@keyframes cue{0%,100%{transform:scaleY(.4);transform-origin:top;opacity:.4}50%{transform:scaleY(1);opacity:1}}
+
+/* ═══ SECTIONS COMMUNES ═══ */
+section{position:relative;padding:110px 24px}
+.wrap{max-width:1100px;margin:0 auto}
+.kicker{font-family:'Cinzel',serif;font-weight:700;font-size:.68rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.headline{font-family:'Cinzel',serif;font-style:italic;font-weight:500;font-size:clamp(1.7rem,5vw,2.7rem);color:var(--ink-bright);line-height:1.25;letter-spacing:.02em;margin-bottom:26px}
+.prose{font-size:1.05rem;line-height:1.85;color:var(--body-text);max-width:720px}
+.prose + .prose{margin-top:18px}
+.prose b{color:var(--ink-bright);font-weight:500}
+.prose .g{color:var(--gold)}
+.rule{height:1px;max-width:1100px;margin:0 auto;background:linear-gradient(90deg,transparent,var(--gold-25),transparent)}
+
+/* Apparition au scroll */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ═══ MANIFESTE ═══ */
+#but{text-align:center}
+#but .prose{margin-left:auto;margin-right:auto}
+
+/* ═══ CHIFFRES ═══ */
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:0;border-top:1px solid var(--gold-15);border-bottom:1px solid var(--gold-15)}
+.stat{flex:1 1 160px;text-align:center;padding:38px 18px;border-left:1px solid var(--gold-15)}
+.stat:first-child{border-left:none}
+.stat .n{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(2rem,5vw,3rem);color:var(--gold);line-height:1}
+.stat .l{margin-top:10px;font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+
+/* ═══ CHAPITRES (features) ═══ */
+.chapter{display:flex;align-items:center;gap:clamp(30px,6vw,80px);max-width:1100px;margin:0 auto}
+.chapter + .chapter{margin-top:110px}
+.chapter:nth-child(even){flex-direction:row-reverse}
+.ch-num{
+  flex:0 0 auto;font-family:'Cinzel',serif;font-weight:900;
+  font-size:clamp(5rem,14vw,10rem);line-height:.9;color:transparent;
+  -webkit-text-stroke:1px var(--gold-25);user-select:none;
+}
+.ch-body{flex:1;min-width:0}
+.ch-body .headline{font-size:clamp(1.4rem,3.6vw,2rem);margin-bottom:16px}
+.ch-body .prose{font-size:.98rem}
+.ch-link{display:inline-flex;align-items:center;gap:10px;margin-top:24px;font-family:'Cinzel',serif;font-weight:700;font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-25);padding-bottom:6px;transition:border-color .2s,gap .2s}
+.ch-link:hover{border-color:var(--gold);gap:16px}
+.ch-link::after{content:"→"}
+@media(max-width:720px){
+  .chapter,.chapter:nth-child(even){flex-direction:column;text-align:center;gap:14px}
+  .ch-num{font-size:4.4rem}
+  .chapter .prose{margin-left:auto;margin-right:auto}
+}
+
+/* ═══ FRISE DE COUVERTURES ═══ */
+.covers-strip{position:relative;margin-top:70px;overflow:hidden;padding:10px 0}
+.covers-strip::before,.covers-strip::after{content:"";position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+.covers-strip::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+.covers-strip::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.covers-row{display:flex;gap:18px;width:max-content;animation:slide 55s linear infinite}
+.covers-strip:hover .covers-row{animation-play-state:paused}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.covers-row img{
+  height:190px;aspect-ratio:250/380;object-fit:cover;display:block;
+  background:#1a1512;border:1px solid var(--gold-25);
+  filter:saturate(.8) brightness(.85);transition:filter .3s,transform .3s;
+}
+.covers-row img:hover{filter:none;transform:translateY(-4px)}
+
+/* ═══ ANTI-SPOILERS ═══ */
+.spoiler-box{
+  max-width:820px;margin:0 auto;text-align:center;padding:54px 34px;position:relative;
+  border:1px solid var(--gold-25);
+  box-shadow:inset 0 0 0 3px rgba(10,9,8,.9),inset 0 0 0 4px var(--gold-15);
+  background:linear-gradient(180deg,rgba(203,161,53,.05),transparent);
+}
+.corner{position:absolute;width:20px;height:20px;border-color:var(--gold)}
+.corner.tl{left:6px;top:6px;border-top:2px solid;border-left:2px solid}
+.corner.tr{right:6px;top:6px;border-top:2px solid;border-right:2px solid}
+.corner.bl{left:6px;bottom:6px;border-bottom:2px solid;border-left:2px solid}
+.corner.br{right:6px;bottom:6px;border-bottom:2px solid;border-right:2px solid}
+.spoiler-box .emoji{font-size:2rem;margin-bottom:14px}
+.spoiler-box .headline{font-size:clamp(1.3rem,3.4vw,1.8rem);margin-bottom:14px}
+.spoiler-box .prose{margin-left:auto;margin-right:auto;font-size:.98rem}
+
+/* ═══ FINAL ═══ */
+#final{text-align:center;padding-bottom:130px;
+  background:radial-gradient(ellipse 70% 60% at 50% 115%,rgba(203,161,53,.12) 0%,transparent 60%)}
+#final .headline{margin-bottom:14px}
+#final .prose{margin:0 auto 40px}
+.cta-row{display:flex;flex-wrap:wrap;justify-content:center;gap:18px}
+
+/* ═══ FOOTER ═══ */
+footer{border-top:1px solid var(--gold-15);padding:34px 24px 44px;text-align:center}
+footer p{font-size:.78rem;color:var(--faint);font-style:italic;line-height:1.8;max-width:640px;margin:0 auto}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero">
+  <div class="hero-kicker">La saga · Les romans · Les jeux</div>
+  <h1>Warcraft</h1>
+  <div class="hero-sub">La Saga complète</div>
+  <div class="hero-divider"><span></span><i></i><span></span></div>
+  <p class="hero-tag">Trente ans d'histoire, vingt-cinq romans, treize jeux.<br>
+  <b>Un seul fil pour ne jamais se perdre en Azeroth.</b></p>
+  <div class="hero-cta"><a class="btn" href="arbre-cytoscape.html">Entrer dans Azeroth</a></div>
+  <a class="scroll-cue" href="#but">Découvrir</a>
+</header>
+
+<!-- ═══ LE BUT ═══ -->
+<section id="but">
+  <div class="wrap reveal">
+    <div class="kicker">Le but de ce site</div>
+    <h2 class="headline">Toute l'histoire d'Azeroth,<br>enfin dans l'ordre.</h2>
+    <p class="prose">L'univers de Warcraft s'étend sur des dizaines de romans, de jeux et de cinématiques publiés dans le désordre pendant trois décennies. Par où commencer&nbsp;? Quel roman lire avant quelle extension&nbsp;? Qui est ce personnage croisé au détour d'une quête&nbsp;?</p>
+    <p class="prose">Ce site est un <b>guide de lecture et d'exploration du lore</b>&nbsp;: il remet la saga dans l'ordre chronologique, relie chaque roman aux jeux qu'il éclaire, et cartographie les personnages et leurs relations — <span class="g">familles, alliances, trahisons</span> — pour que l'histoire se lise comme une seule grande épopée.</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ═══ CHIFFRES ═══ -->
+<section id="chiffres">
+  <div class="wrap reveal">
+    <div class="stats">
+      <div class="stat"><div class="n">81</div><div class="l">Personnages</div></div>
+      <div class="stat"><div class="n">115</div><div class="l">Relations</div></div>
+      <div class="stat"><div class="n">25</div><div class="l">Romans</div></div>
+      <div class="stat"><div class="n">13</div><div class="l">Jeux</div></div>
+      <div class="stat"><div class="n">47</div><div class="l">Cinématiques</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHAPITRES ═══ -->
+<section id="chapitres">
+  <div class="chapter reveal">
+    <div class="ch-num">I</div>
+    <div class="ch-body">
+      <div class="kicker">Personnages</div>
+      <h3 class="headline">Héros, traîtres et dieux déchus</h3>
+      <p class="prose">81 figures d'Azeroth réunies en 12 grandes maisons — de la Légion ardente aux Vols draconiques. Chaque fiche retrace le destin du personnage, ses liens de famille, ses alliés, ses mentors et ses ennemis jurés, avec les romans et les quêtes où le croiser.</p>
+      <a class="ch-link" href="arbre-cytoscape.html#tree">Explorer les personnages</a>
+    </div>
+  </div>
+
+  <div class="chapter reveal">
+    <div class="ch-num">II</div>
+    <div class="ch-body">
+      <div class="kicker">Ordre de lecture</div>
+      <h3 class="headline">25 romans, un seul chemin</h3>
+      <p class="prose">Les romans Warcraft n'ont pas été publiés dans l'ordre de l'histoire. Ce parcours les remet à leur place chronologique et explique, pour chacun, pourquoi le lire à ce moment-là et quels personnages y prennent vie.</p>
+      <a class="ch-link" href="arbre-cytoscape.html#books">Suivre l'ordre de lecture</a>
+    </div>
+  </div>
+
+  <div class="chapter reveal">
+    <div class="ch-num">III</div>
+    <div class="ch-body">
+      <div class="kicker">En jeu</div>
+      <h3 class="headline">Vivre l'histoire manette en main</h3>
+      <p class="prose">De Warcraft&nbsp;: Orcs &amp; Humans aux dernières extensions de World of Warcraft, la chronologie des 13 jeux indique où chaque roman s'insère et quelles quêtes prolongent l'histoire que vous venez de lire.</p>
+      <a class="ch-link" href="arbre-cytoscape.html#game">Parcourir la chronologie</a>
+    </div>
+  </div>
+
+  <div class="chapter reveal">
+    <div class="ch-num">IV</div>
+    <div class="ch-body">
+      <div class="kicker">Cinématiques</div>
+      <h3 class="headline">47 vidéos officielles Blizzard</h3>
+      <p class="prose">Cinématiques d'introduction, courts métrages animés, documentaires&nbsp;: toutes les vidéos officielles, classées par ère et reliées aux personnages qu'elles mettent en scène — à regarder au bon moment du voyage.</p>
+      <a class="ch-link" href="arbre-cytoscape.html#videos">Voir les cinématiques</a>
+    </div>
+  </div>
+
+  <div class="chapter reveal">
+    <div class="ch-num">V</div>
+    <div class="ch-body">
+      <div class="kicker">Bibliothèque</div>
+      <h3 class="headline">Toutes les publications</h3>
+      <p class="prose">Au-delà du parcours conseillé&nbsp;: l'ensemble des publications Warcraft — romans, nouvelles, trilogies et chroniques — pour les complétistes qui veulent tout lire, tout savoir, tout posséder.</p>
+      <a class="ch-link" href="arbre-cytoscape.html#lib">Ouvrir la bibliothèque</a>
+    </div>
+  </div>
+
+  <!-- Frise de couvertures -->
+  <div class="covers-strip reveal">
+    <div class="covers-row" id="covers-row">
+      <img src="https://warcraft.wiki.gg/images/thumb/RiseoftheHorde-Cover2016.jpg/250px-RiseoftheHorde-Cover2016.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/LastGuardian-Cover-2016.jpg/250px-LastGuardian-Cover-2016.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/TidesofDarkness-Cover.jpg/250px-TidesofDarkness-Cover.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/DayoftheDragon-Cover2019.jpg/250px-DayoftheDragon-Cover2019.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/BeyondtheDarkPortal-Cover.jpg/250px-BeyondtheDarkPortal-Cover.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/OfBloodandHonor-Cover.jpg/250px-OfBloodandHonor-Cover.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/CycleofHatred.jpg/250px-CycleofHatred.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/WaroftheAncients-One-Cover2017.jpg/250px-WaroftheAncients-One-Cover2017.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/ShatteringCover-Blizzard_Legends.jpg/250px-ShatteringCover-Blizzard_Legends.jpg" alt="" loading="lazy">
+      <img src="https://warcraft.wiki.gg/images/thumb/ThrallTwilightOfTheAspectsCover.jpg/250px-ThrallTwilightOfTheAspectsCover.jpg" alt="" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ═══ ANTI-SPOILERS ═══ -->
+<section id="spoilers">
+  <div class="spoiler-box reveal">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <div class="emoji">🙈</div>
+    <h3 class="headline">Voyagez sans rien vous gâcher</h3>
+    <p class="prose">Le destin de certains héros est l'un des grands frissons de la saga. Le <b>mode anti-spoilers</b> masque les révélations majeures dans les fiches personnages&nbsp;: explorez librement, la surprise reste intacte jusqu'à ce que vous décidiez de lever le voile.</p>
+  </div>
+</section>
+
+<!-- ═══ FINAL ═══ -->
+<section id="final">
+  <div class="wrap reveal">
+    <div class="kicker">Le voyage commence ici</div>
+    <h2 class="headline">Dresse-toi, voyageur,<br>et que la saga te guide.</h2>
+    <p class="prose">Choisissez votre porte d'entrée&nbsp;: les personnages, les romans, ou les jeux.</p>
+    <div class="cta-row">
+      <a class="btn" href="arbre-cytoscape.html">Explorer la saga</a>
+      <a class="btn ghost" href="arbre-cytoscape.html#books">Commencer par les romans</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Projet de fan, non affilié à Blizzard Entertainment. Warcraft et World of Warcraft sont des marques déposées de Blizzard Entertainment, Inc. Couvertures et illustrations © leurs ayants droit respectifs.</p>
+</footer>
+
+<script>
+/* Apparition au scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}
+}),{threshold:.15});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+
+/* Boucle infinie de la frise : on duplique la rangée */
+const row=document.getElementById("covers-row");
+row.innerHTML+=row.innerHTML;
+</script>
+
+</body>
+</html>
