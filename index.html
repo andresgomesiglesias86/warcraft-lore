@@ -122,6 +122,10 @@ section{position:relative;padding:60px 24px}
   background:linear-gradient(135deg,rgba(203,161,53,.05) 0%,transparent 50%,rgba(139,69,19,.05) 100%);
   position:relative;
   overflow:hidden;
+  padding-top:30px;
+  padding-bottom:60px;
+  margin-top:-180px;
+  margin-bottom:180px;
 }
 #but::before{
   content:'';position:absolute;top:-50%;right:-20%;width:600px;height:600px;
@@ -156,19 +160,23 @@ section{position:relative;padding:60px 24px}
 
 /* ═══ CHAPITRES (features) ═══ */
 #chapitres{
-  background:linear-gradient(to bottom,
+  background:linear-gradient(135deg,
     rgba(10,9,8,1) 0%,
-    rgba(30,25,20,.3) 50%,
+    rgba(40,30,20,.4) 25%,
+    rgba(20,15,10,.6) 50%,
+    rgba(30,20,10,.4) 75%,
     rgba(10,9,8,1) 100%);
   position:relative;
 }
 #chapitres::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:100%;
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
   background-image:
+    radial-gradient(circle at 10% 20%, rgba(203,161,53,.08) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(139,69,19,.08) 0%, transparent 50%),
     linear-gradient(90deg, rgba(203,161,53,.02) 1px, transparent 1px),
     linear-gradient(0deg, rgba(203,161,53,.02) 1px, transparent 1px);
-  background-size:100px 100px;
-  opacity:.5;pointer-events:none;
+  background-size:100% 100%, 100% 100%, 100px 100px, 100px 100px;
+  opacity:.6;pointer-events:none;
 }
 #chapitres .wrap{position:relative;z-index:1}
 .chapter{display:flex;align-items:center;gap:clamp(30px,6vw,80px);max-width:1100px;margin:0 auto;position:relative}
@@ -284,12 +292,12 @@ footer p{font-size:.78rem;color:var(--faint);font-style:italic;line-height:1.8;m
 <header class="hero">
   <canvas id="water-ripple-canvas"></canvas>
   <div class="hero-content">
-    <div class="hero-kicker">La saga · Les romans · Les jeux</div>
+    <div class="hero-kicker">Une épopée intemporelle</div>
     <h1>Warcraft</h1>
-    <div class="hero-sub">La Saga complète</div>
+    <div class="hero-sub">La Chronologie Complète</div>
     <div class="hero-divider"><span></span><i></i><span></span></div>
-    <p class="hero-tag">Trente ans d'histoire, vingt-cinq romans, treize jeux.<br>
-    <b>Un seul fil pour ne jamais se perdre en Azeroth.</b></p>
+    <p class="hero-tag">Trente ans de romans, jeux et cinématiques publiés dans le désordre.<br>
+    <b>Découvrez l'ordre de lecture et de jeu pour vivre la saga complète sans confusion.</b></p>
     <div class="hero-cta"><a class="btn" href="arbre-cytoscape.html">Entrer dans Azeroth</a></div>
     <a class="scroll-cue" href="#but">Découvrir</a>
   </div>
@@ -311,8 +319,8 @@ footer p{font-size:.78rem;color:var(--faint);font-style:italic;line-height:1.8;m
 <section id="shader-hero" style="position:relative;height:100vh;overflow:hidden;">
   <canvas id="animated-shader-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;display:block;"></canvas>
   <div style="position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;">
-    <h2 style="font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;color:var(--gold);text-shadow:0 0 30px rgba(203,161,53,.3);margin-bottom:20px;">L'Univers Prend Vie</h2>
-    <p style="font-size:clamp(1rem,2vw,1.3rem);color:var(--body-text);max-width:600px;line-height:1.7;text-shadow:0 2px 8px rgba(0,0,0,.8);">Explorez les dimensions cachées d'Azeroth avec des visuels qui capturent l'essence même de la magie warcraft</p>
+    <h2 style="font-family:'Cinzel',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;color:var(--gold);text-shadow:0 0 30px rgba(203,161,53,.3);margin-bottom:20px;">Les Mondes S'Entrelacent</h2>
+    <p style="font-size:clamp(1rem,2vw,1.3rem);color:var(--body-text);max-width:600px;line-height:1.7;text-shadow:0 2px 8px rgba(0,0,0,.8);">Plongez dans l'histoire entrelacée de trente ans de lore, où chaque roman, chaque jeu et chaque cinématique révèle une part de la saga.</p>
   </div>
 </section>
 
@@ -431,6 +439,7 @@ footer p{font-size:.78rem;color:var(--faint);font-style:italic;line-height:1.8;m
 
 <script src="water-ripple.js"></script>
 <script src="animated-shader-hero.js"></script>
+<script src="chapter-icons.js"></script>
 <script>
 /* Initialiser le WaterRippleImage avec l'image dark-portal */
 console.log('Script initialized');
