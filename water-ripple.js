@@ -185,6 +185,8 @@ class WaterRippleImage {
     this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
     this.canvas.style.display = 'block';
+    this.canvas.style.position = 'absolute';
+    this.canvas.style.inset = '0';
 
     const gl =
       this.canvas.getContext('webgl', { alpha: true, antialias: true }) ||
@@ -241,7 +243,7 @@ class WaterRippleImage {
 
     // Load image
     console.log('Loading image:', this.params.src);
-    this.loadImage(this.params.src).catch((e) => console.error('Image load error:', e));
+    this.loadImage(this.params.src);
 
     // Start animation loop
     this.render();
@@ -280,28 +282,63 @@ class WaterRippleImage {
     gl.uniform1f(this.uniforms['u_img_ratio'], imgRatio);
   }
 
+  createFallbackTexture() {
+    const gl = this.gl;
+    if (this.texture) gl.deleteTexture(this.texture);
+
+    const size = 256;
+    const data = new Uint8Array(size * size * 4);
+    for (let i = 0; i < data.length; i += 4) {
+      const val = Math.floor(Math.random() * 80 + 30);
+      data[i] = val;
+      data[i + 1] = val;
+      data[i + 2] = val + 20;
+      data[i + 3] = 255;
+    }
+
+    const texture = gl.createTexture();
+    this.texture = texture;
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, size, size, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+
+    gl.uniform1i(this.uniforms['u_image_texture'], 0);
+    gl.uniform1f(this.uniforms['u_ratio'], this.canvas.width / this.canvas.height);
+    gl.uniform1f(this.uniforms['u_img_ratio'], 1);
+  }
+
   loadImage(srcUrl) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
       img.onload = () => {
         this.image = img;
         this.setTextureFromImage(img);
+        console.log('Image loaded successfully:', srcUrl, img.naturalWidth, 'x', img.naturalHeight);
         resolve();
       };
-      img.onerror = reject;
+      img.onerror = (e) => {
+        console.warn('Failed to load image:', srcUrl, e);
+        console.warn('Trying fallback texture');
+        this.createFallbackTexture();
+        resolve();
+      };
       img.src = srcUrl;
     });
   }
 
   resize() {
     const gl = this.gl;
-    // Force to match parent element size
-    const parent = this.canvas.parentElement;
-    const w = Math.floor((parent.clientWidth || window.innerWidth) * this.dpr);
-    const h = Math.floor((parent.clientHeight || window.innerHeight) * this.dpr);
+    // Get canvas display size
+    const rect = this.canvas.getBoundingClientRect();
+    const w = Math.floor(rect.width * this.dpr);
+    const h = Math.floor(rect.height * this.dpr);
 
-    console.log('Resizing canvas to', w, 'x', h, '(parent:', parent.clientWidth, 'x', parent.clientHeight + ')');
+    console.log('Resizing canvas to', w, 'x', h, '(display:', rect.width, 'x', rect.height + ')');
 
     if (this.canvas.width !== w || this.canvas.height !== h) {
       this.canvas.width = w;
