@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personnage — Warcraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arbre-cytoscape.css">
+<style>
+  /* La fiche s'affiche en pleine page (pas en overlay) */
+  #char-page { max-width: 900px; margin: 0 auto; padding: 20px; }
+  .char-back { display:inline-block; margin:10px 0 20px; font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); text-decoration:none; border:1px solid var(--gold-35); padding:8px 16px; transition:background .15s; }
+  .char-back:hover { background:rgba(203,161,53,.12); }
+  .char-hero { margin-bottom:30px; }
+  .char-rels-section { max-width:900px; margin:0 auto 30px; }
+  .char-rels-title { font-family:'Cinzel',serif; font-weight:700; font-size:.9rem; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid var(--gold-25); }
+  .char-rels-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+  .not-found { text-align:center; padding:80px 20px; color:var(--muted); }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- header injecté par shared.js -->
+  <div id="masthead-mount"></div>
+
+  <div id="char-page">
+    <a class="char-back" href="personnages.html">← Tous les personnages</a>
+    <div id="char-content"></div>
+  </div>
+</div>
+
+<!-- Modale "histoire complète" -->
+<div class="full-lore-overlay" id="full-lore-overlay">
+  <button class="modal-close" id="full-lore-close">✕</button>
+  <div class="full-lore-modal" id="full-lore-modal">
+    <div class="full-lore-header" id="full-lore-header"></div>
+    <div class="full-lore-body" id="full-lore-body"></div>
+  </div>
+</div>
+
+<!-- Modale vidéo -->
+<div class="vid-modal-overlay" id="vid-modal-overlay">
+  <div class="vid-modal" id="vid-modal">
+    <button class="modal-close" id="vid-modal-close">✕</button>
+    <div class="vid-modal-player">
+      <iframe id="vid-modal-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div class="vid-modal-info">
+      <h3 id="vid-modal-title"></h3>
+      <div class="vid-modal-era" id="vid-modal-era"></div>
+      <p id="vid-modal-desc"></p>
+      <div class="vid-modal-chars" id="vid-modal-chars"></div>
+    </div>
+  </div>
+</div>
+
+<script src="warcraft-data.js"></script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  document.getElementById("masthead-mount").outerHTML = renderMasthead("personnages");
+  initNospoil();
+
+  const id = new URLSearchParams(location.search).get("id");
+  const c = id && CHARS[id];
+  const mount = document.getElementById("char-content");
+
+  if (!c) {
+    document.title = "Personnage introuvable — Warcraft";
+    mount.innerHTML = `<div class="not-found"><h2>Personnage introuvable</h2><p>Ce personnage n'existe pas dans la base.</p></div>`;
+    return;
+  }
+
+  document.title = `${c.name} — Warcraft`;
+  const ring = RING_COLOR[c.cls] || "#cba135";
+  const shortText = CHAR_SHORT[id] || c.desc;
+
+  const artHtml = PORTRAITS_IMG[id]
+    ? `<img src="${PORTRAITS_IMG[id]}" alt="${c.name}" style="border-color:${ring}" onerror="this.style.display='none'">`
+    : `<div class="char-hero-fallback" style="border-color:${ring}">${c.icon}</div>`;
+
+  const relsCards = buildRelations(id);
+
+  mount.innerHTML = `
+    <div class="char-hero">
+      <div class="char-hero-text">
+        <h1>${c.name}</h1>
+        <div class="char-hero-role">${c.role}</div>
+        <div class="char-hero-divider"><span></span><i></i><span></span></div>
+        <p class="char-hero-desc">${shortText}</p>
+        <button class="read-more-btn" id="read-more">📖 Lire l'histoire complète</button>
+        <div id="cf-info">${buildInfobox(id)}</div>
+        <div>${wikiBtn(WIKI[id])}</div>
+      </div>
+      <div class="char-hero-img" id="cf-art">${artHtml}</div>
+    </div>
+
+    ${relsCards ? `
+    <div class="char-rels-section">
+      <div class="char-rels-title">Relations</div>
+      <div class="char-rels-grid">${relsCards}</div>
+    </div>` : ""}
+
+    <div class="char-full-body">
+      ${buildBib(id)}
+      ${buildQuests(id)}
+      ${buildCharVideos(id)}
+    </div>
+  `;
+
+  /* Modale histoire complète */
+  document.getElementById("read-more").onclick = () => openFullLore(id);
+  document.getElementById("full-lore-close").onclick = () => document.getElementById("full-lore-overlay").classList.remove("open");
+  document.getElementById("full-lore-overlay").onclick = e => { if (e.target === e.currentTarget) e.currentTarget.classList.remove("open"); };
+
+  /* Liens parents dans l'infobox : déjà des <a href>, rien à faire */
+
+  /* Vidéos du perso → modale */
+  mount.querySelectorAll(".char-vid-thumb").forEach(thumb => {
+    thumb.onclick = () => {
+      const yt = thumb.dataset.yt;
+      const v = VIDEOS.find(x => x.youtube === yt);
+      document.getElementById("vid-modal-iframe").src = `https://www.youtube.com/embed/${yt}?autoplay=1`;
+      document.getElementById("vid-modal-title").textContent = v ? v.title : "";
+      document.getElementById("vid-modal-era").textContent = v && v.era ? (ERA_LABELS[v.era] || v.era) : "";
+      document.getElementById("vid-modal-desc").textContent = v ? v.desc : "";
+      document.getElementById("vid-modal-chars").innerHTML = "";
+      document.getElementById("vid-modal-overlay").classList.add("open");
+    };
+  });
+  document.getElementById("vid-modal-close").onclick = closeVid;
+  document.getElementById("vid-modal-overlay").onclick = e => { if (e.target === e.currentTarget) closeVid(); };
+  function closeVid(){ document.getElementById("vid-modal-iframe").src=""; document.getElementById("vid-modal-overlay").classList.remove("open"); }
+
+  function openFullLore(id){
+    const c = CHARS[id], info = CHAR_INFO[id], imgData = PORTRAITS_IMG[id];
+    let headerHtml = imgData
+      ? `<div class="full-lore-image"><img src="${imgData}" alt="${c.name}" loading="lazy"></div>`
+      : `<div class="full-lore-image">${c.icon || '🎭'}</div>`;
+    headerHtml += `<div class="full-lore-title"><h2>${c.name}</h2><p class="full-lore-subtitle">${c.role}</p>`;
+    if (info) {
+      headerHtml += `<div class="full-lore-infobox">`;
+      if (info.race)   headerHtml += `<div class="full-lore-info-row"><span class="full-lore-info-key">Race</span><span class="full-lore-info-val">${info.race}</span></div>`;
+      if (info.titre)  headerHtml += `<div class="full-lore-info-row"><span class="full-lore-info-key">Titre</span><span class="full-lore-info-val">${info.titre}</span></div>`;
+      if (info.affil)  headerHtml += `<div class="full-lore-info-row"><span class="full-lore-info-key">Affiliation</span><span class="full-lore-info-val">${info.affil}</span></div>`;
+      if (info.statut) headerHtml += `<div class="full-lore-info-row"><span class="full-lore-info-key">Statut</span><span class="full-lore-info-val"><span class="status-dot ${info.statut}"></span>${STATUS_LABELS[info.statut]||info.statut}</span></div>`;
+      if (info.lieu)   headerHtml += `<div class="full-lore-info-row"><span class="full-lore-info-key">Naissance</span><span class="full-lore-info-val">${info.lieu}</span></div>`;
+      headerHtml += `</div>`;
+    }
+    headerHtml += `</div>`;
+    document.getElementById("full-lore-header").innerHTML = headerHtml;
+    document.getElementById("full-lore-body").innerHTML = `<div class="full-lore-text">${c.desc}</div>`;
+    document.getElementById("full-lore-overlay").classList.add("open");
+  }
+})();
+</script>
+</body>
+</html>

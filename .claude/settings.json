@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git reset *)",
+      "Bash(cp \"C:\\\\Users\\\\agome\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\g--wacraft-Warcraft\\\\651696d9-71be-495f-9304-0c0bd7e1c426\\\\scratchpad\\\\version-1-orientation.html\" \"g:\\\\wacraft\\\\Warcraft\\\\version-1-orientation.html\")",
+      "Bash(cp \"C:\\\\Users\\\\agome\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\g--wacraft-Warcraft\\\\651696d9-71be-495f-9304-0c0bd7e1c426\\\\scratchpad\\\\version-2-quickstart.html\" \"g:\\\\wacraft\\\\Warcraft\\\\version-2-quickstart.html\")",
+      "Bash(cp \"C:\\\\Users\\\\agome\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\g--wacraft-Warcraft\\\\651696d9-71be-495f-9304-0c0bd7e1c426\\\\scratchpad\\\\version-3-hybrid.html\" \"g:\\\\wacraft\\\\Warcraft\\\\version-3-hybrid.html\")",
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(cloudflared tunnel *)",
+      "Bash(git ls-tree *)",
+      "Bash(grep -E \"\\\\.\\(js|html|css\\)$\")",
+      "Bash(node --check arbre-cytoscape.js)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:8000/arbre-cytoscape.html)",
+      "Bash(node --check shared.js)",
+      "Bash(sed -n \"/^const RELS/,+3p\" warcraft-data.js)"
+    ]
+  }
+}

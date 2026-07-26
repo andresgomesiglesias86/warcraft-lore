@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordre de lecture — Warcraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arbre-cytoscape.css">
+</head>
+<body>
+<div id="app">
+  <div id="masthead-mount"></div>
+
+  <div class="view active" id="view-books">
+    <h2 class="view-title">Ordre de lecture</h2>
+    <div class="hint">25 livres dans l'ordre conseillé</div>
+    <div class="books" id="books"></div>
+  </div>
+</div>
+
+<script src="warcraft-data.js"></script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  document.getElementById("masthead-mount").outerHTML = renderMasthead("livres");
+  initNospoil();
+
+  const booksEl = document.getElementById("books");
+  BOOKS.forEach((b, i) => {
+    const d = document.createElement("div");
+    d.className = "book-row";
+    d.style.flexDirection = i % 2 === 0 ? "row" : "row-reverse";
+    const persos = b.persos.map(([id, name]) =>
+      id ? `<a class="link" href="${charUrl(id)}">${name}</a>` : `<span>${name}</span>`
+    ).join("");
+    const coverHtml = COVERS[b.num] ? `<img src="${COVERS[b.num]}" class="book-cover-framed" onerror="this.style.display='none'" alt="Couverture ${b.title}">` : '';
+    d.innerHTML = `
+      <div class="book-frame">
+        <span class="frame-corner tl"></span><span class="frame-corner tr"></span><span class="frame-corner bl"></span><span class="frame-corner br"></span>
+        <div class="book-num-badge">${b.num}</div>
+        ${coverHtml}
+      </div>
+      <div class="book-content">
+        <div class="book-title-banner">${b.title}</div>
+        <div class="meta">${b.author} · ${b.year}</div>
+        <div class="badges"><span class="period">📍 ${b.period}</span></div>
+        <p>${b.resume}</p>
+        <div class="why spoilable"><b>POURQUOI À CETTE PLACE</b>${b.why}</div>
+        <div class="persos">${persos}</div>
+      </div>`;
+    booksEl.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>

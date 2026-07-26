@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personnages — Warcraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arbre-cytoscape.css">
+</head>
+<body>
+<div id="app">
+  <div id="masthead-mount"></div>
+
+  <div class="view active" id="view-tree">
+    <h2 class="view-title">Personnages</h2>
+    <div class="search-wrap">
+      <input type="search" id="char-search" placeholder="Rechercher un héros, un traître, un dieu déchu…" autocomplete="off">
+      <div class="search-results" id="search-results"></div>
+    </div>
+    <div id="chars-groups"></div>
+  </div>
+</div>
+
+<script src="warcraft-data.js"></script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  document.getElementById("masthead-mount").outerHTML = renderMasthead("personnages");
+  initNospoil();
+  initCharSearch();
+
+  // Groupes (identique à l'app d'origine)
+  const charsByFaction = GROUPS.map(g => ({ label:g.label, ids:[...g.ids] }));
+  const grouped = new Set(GROUPS.flatMap(g => g.ids));
+  const others = Object.keys(CHARS).filter(id => !grouped.has(id));
+  if (others.length) charsByFaction.push({ label:"Autres", ids:others });
+
+  const groupsEl = document.getElementById("chars-groups");
+  charsByFaction.filter(g => g.ids.length).forEach(g => {
+    const wrap = document.createElement("div"); wrap.className = "char-group";
+    const title = document.createElement("div"); title.className = "char-group-title"; title.textContent = g.label;
+    wrap.appendChild(title);
+    const grid = document.createElement("div"); grid.className = "char-grid";
+    g.ids.forEach(id => {
+      const c = CHARS[id]; if (!c) return;
+      const ring = RING_COLOR[c.cls] || "#cba135";
+      const a = document.createElement("a");
+      a.className = "char-card"; a.href = charUrl(id); a.dataset.id = id;
+      const imgHtml = PORTRAITS_IMG[id]
+        ? `<img src="${PORTRAITS_IMG[id]}" alt="${c.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : "";
+      a.innerHTML = `
+        <div class="char-card-img" style="border-color:${ring}">
+          ${imgHtml}
+          <div class="char-card-fallback" style="${PORTRAITS_IMG[id]?'display:none':'display:flex'}">${c.icon}</div>
+        </div>
+        <div class="char-card-name">${c.name}</div>`;
+      grid.appendChild(a);
+    });
+    wrap.appendChild(grid);
+    groupsEl.appendChild(wrap);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinématiques — Warcraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arbre-cytoscape.css">
+</head>
+<body>
+<div id="app">
+  <div id="masthead-mount"></div>
+
+  <div class="view active" id="view-videos">
+    <h2 class="view-title">Cinématiques</h2>
+    <div class="hint">Vidéos officielles Blizzard — cinématiques, courts métrages, documentaires</div>
+    <div class="vid-filters" id="vid-filters"></div>
+    <div class="vid-grid" id="vid-grid"></div>
+  </div>
+</div>
+
+<div class="vid-modal-overlay" id="vid-modal-overlay">
+  <div class="vid-modal" id="vid-modal">
+    <button class="modal-close" id="vid-modal-close">✕</button>
+    <div class="vid-modal-player">
+      <iframe id="vid-modal-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    <div class="vid-modal-info">
+      <h3 id="vid-modal-title"></h3>
+      <div class="vid-modal-era" id="vid-modal-era"></div>
+      <p id="vid-modal-desc"></p>
+      <div class="vid-modal-chars" id="vid-modal-chars"></div>
+    </div>
+  </div>
+</div>
+
+<script src="warcraft-data.js"></script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  document.getElementById("masthead-mount").outerHTML = renderMasthead("cinematiques");
+  initNospoil();
+
+  const ERA_CHRON_ORDER = ["War of the Ancients","Mists of Pandaria","Warlords of Draenor","Legion","Battle for Azeroth","Shadowlands","Dragonflight","The War Within","Midnight",""];
+
+  let activeEra = "all";
+  let sortMode = "blizzard";
+  const filtersEl = document.getElementById("vid-filters");
+  const gridEl = document.getElementById("vid-grid");
+
+  const sortBar = document.createElement("div");
+  sortBar.className = "vid-sort-bar";
+  sortBar.innerHTML = `
+    <span class="vid-sort-label">Ordre :</span>
+    <button class="vid-sort-btn active" data-sort="blizzard">📅 Blizzard</button>
+    <button class="vid-sort-btn" data-sort="lore">📖 Ordre du lore</button>`;
+  filtersEl.parentNode.insertBefore(sortBar, filtersEl);
+  sortBar.querySelectorAll(".vid-sort-btn").forEach(btn => {
+    btn.onclick = () => {
+      sortMode = btn.dataset.sort;
+      sortBar.querySelectorAll(".vid-sort-btn").forEach(b => b.classList.toggle("active", b === btn));
+      renderGrid();
+    };
+  });
+
+  const eras = [];
+  ERA_CHRON_ORDER.forEach(e => { if (VIDEOS.some(v => v.era === e)) eras.push(e); });
+
+  const allChip = document.createElement("span");
+  allChip.className = "vid-chip active"; allChip.textContent = "Tout";
+  allChip.onclick = () => setEra("all");
+  filtersEl.appendChild(allChip);
+  eras.forEach(era => {
+    const ch = document.createElement("span");
+    ch.className = "vid-chip"; ch.textContent = ERA_LABELS[era] || era || "Hors extension";
+    ch.dataset.era = era;
+    ch.onclick = () => setEra(era);
+    filtersEl.appendChild(ch);
+  });
+
+  function setEra(era) {
+    activeEra = era;
+    filtersEl.querySelectorAll(".vid-chip").forEach(c => {
+      c.classList.toggle("active", c === allChip ? (era === "all") : (c.dataset.era === era));
+    });
+    renderGrid();
+  }
+
+  function getSorted(list) {
+    if (sortMode === "blizzard") return list;
+    return [...list].sort((a, b) => {
+      const ia = ERA_CHRON_ORDER.indexOf(a.era), ib = ERA_CHRON_ORDER.indexOf(b.era);
+      const ra = ia === -1 ? 999 : ia, rb = ib === -1 ? 999 : ib;
+      return ra !== rb ? ra - rb : VIDEOS.indexOf(a) - VIDEOS.indexOf(b);
+    });
+  }
+
+  function renderGrid() {
+    gridEl.innerHTML = "";
+    const filtered = activeEra === "all" ? VIDEOS : VIDEOS.filter(v => v.era === activeEra);
+    const sorted = getSorted(filtered);
+    if (sortMode === "lore" && activeEra === "all") {
+      let lastEra = null;
+      sorted.forEach(v => {
+        if (v.era !== lastEra) {
+          lastEra = v.era;
+          const sep = document.createElement("div");
+          sep.className = "vid-era-separator";
+          sep.textContent = ERA_LABELS[v.era] || v.era || "Hors extension";
+          gridEl.appendChild(sep);
+        }
+        gridEl.appendChild(makeCard(v));
+      });
+    } else {
+      sorted.forEach(v => gridEl.appendChild(makeCard(v)));
+    }
+  }
+
+  function makeCard(v) {
+    const card = document.createElement("div");
+    card.className = "vid-card";
+    const charBadges = v.chars.map(cid => {
+      const c = CHARS[cid];
+      return c ? `<a class="vid-char-badge" href="${charUrl(cid)}">${c.icon} ${c.name}</a>` : "";
+    }).join("");
+    card.innerHTML = `
+      <div class="vid-thumb" data-yt="${v.youtube}">
+        <img src="https://i.ytimg.com/vi/${v.youtube}/mqdefault.jpg" alt="${v.title}" loading="lazy" onerror="this.src='https://i.ytimg.com/vi/${v.youtube}/default.jpg'">
+        <div class="vid-play-btn">▶</div>
+      </div>
+      <div class="vid-info">
+        <div class="vid-title">${v.title}</div>
+        ${v.era ? `<div class="vid-era-tag">${ERA_LABELS[v.era] || v.era}</div>` : ""}
+        <p class="vid-desc">${v.desc}</p>
+        ${charBadges ? `<div class="vid-chars">${charBadges}</div>` : ""}
+      </div>`;
+    card.querySelector(".vid-thumb").onclick = () => openVidModal(v);
+    return card;
+  }
+
+  function openVidModal(v) {
+    document.getElementById("vid-modal-iframe").src = `https://www.youtube.com/embed/${v.youtube}?autoplay=1`;
+    document.getElementById("vid-modal-title").textContent = v.title;
+    document.getElementById("vid-modal-era").textContent = v.era ? (ERA_LABELS[v.era] || v.era) : "";
+    document.getElementById("vid-modal-desc").textContent = v.desc;
+    const charHtml = v.chars.map(cid => {
+      const c = CHARS[cid];
+      return c ? `<a class="vid-modal-char" href="${charUrl(cid)}">${c.icon} ${c.name}</a>` : "";
+    }).join("");
+    document.getElementById("vid-modal-chars").innerHTML = charHtml ? `<b>Personnages :</b> ${charHtml}` : "";
+    document.getElementById("vid-modal-overlay").classList.add("open");
+  }
+
+  function closeVidModal() {
+    document.getElementById("vid-modal-iframe").src = "";
+    document.getElementById("vid-modal-overlay").classList.remove("open");
+  }
+
+  document.getElementById("vid-modal-close").onclick = closeVidModal;
+  document.getElementById("vid-modal-overlay").onclick = e => { if (e.target === e.currentTarget) closeVidModal(); };
+
+  renderGrid();
+})();
+</script>
+</body>
+</html>

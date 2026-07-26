@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>En jeu — Warcraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arbre-cytoscape.css">
+</head>
+<body>
+<div id="app">
+  <div id="masthead-mount"></div>
+
+  <div class="view active" id="view-game">
+    <h2 class="view-title">En jeu</h2>
+    <div class="hint">Vivre l'histoire manette en main — ordre chronologique des jeux</div>
+    <div class="books" id="game"></div>
+  </div>
+</div>
+
+<script src="warcraft-data.js"></script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  document.getElementById("masthead-mount").outerHTML = renderMasthead("jeu");
+  initNospoil();
+
+  const gameEl = document.getElementById("game");
+  gameEl.className = "game-timeline";
+  GAME.forEach(g => {
+    const row = document.createElement("div");
+    row.className = "game-row";
+    let questsHtml = "";
+    if (g.quests && g.quests.length) {
+      const items = g.quests.map(q => `<li><span class="q-name">⬥ ${q.n}</span><span class="q-zone">${q.z}</span><span class="q-tip">${q.t}</span></li>`).join("");
+      questsHtml = `<div class="quests-wrap"><div class="quests-title">⚔ Quêtes clés dans l'ordre</div><ul class="quests-list">${items}</ul></div>`;
+    }
+    row.innerHTML = `
+      <div class="game-num"><div class="game-num-circle">${g.num}</div></div>
+      <div class="game-card">
+        <h2>${g.title}</h2>
+        <span class="period">📍 ${g.period}</span>
+        <p>${g.resume}</p>
+        <div class="why">${g.why}</div>
+        ${questsHtml}
+      </div>`;
+    gameEl.appendChild(row);
+  });
+})();
+</script>
+</body>
+</html>

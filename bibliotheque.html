@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bibliothèque — Warcraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="arbre-cytoscape.css">
+</head>
+<body>
+<div id="app">
+  <div id="masthead-mount"></div>
+
+  <div class="view active" id="view-lib">
+    <h2 class="view-title">Bibliothèque</h2>
+    <div class="hint">Toutes les publications Warcraft</div>
+    <div class="lib" id="lib"></div>
+  </div>
+</div>
+
+<script src="warcraft-data.js"></script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  document.getElementById("masthead-mount").outerHTML = renderMasthead("bibliotheque");
+  initNospoil();
+
+  const libEl = document.getElementById("lib");
+  LIB.forEach((cat, i) => {
+    const d = document.createElement("details");
+    if (i === 0) d.open = true;
+    const rows = cat.items.map(item =>
+      `<li><span class="yr">${item.yr}</span><span>${item.t}</span><span class="au">— ${item.au}</span></li>`
+    ).join("");
+    d.innerHTML = `<summary>${cat.icon} ${cat.title}<span class="cnt">${cat.items.length} titres</span></summary><div class="cat-desc">${cat.desc}</div><ol>${rows}</ol>`;
+    libEl.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>
